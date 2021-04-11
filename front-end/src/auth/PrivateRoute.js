@@ -1,9 +1,10 @@
 import { Redirect, Route } from 'react-router-dom';
+import { useToken } from './useToken';
 
 export const PrivateRoute = (props) => {
-    const user = null;
+    const [token] = useToken();
 
-    if (!user) return <Redirect to="/login" />;
+    if (!token) return <Redirect to="/login" />;
 
     return <Route {...props} />
 };

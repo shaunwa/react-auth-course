@@ -11,7 +11,7 @@ export const logInRoute = {
         const db = getDbConnection('react-auth-db');
         const user = await db.collection('users').findOne({ email });
         
-        if (!user) return res.status(401); 
+        if (!user) return res.sendStatus(401); 
         // There is no user with that email. We want to return the same
         // status code so that people can't fish around for emails to see
         // who has an account and who doesn't
