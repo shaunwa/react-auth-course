@@ -18,6 +18,8 @@ export const signUpRoute = {
 
         // Encrypt the password
         const passwordHash = await bcrypt.hash(password, 10);
+
+        const verificationString = uuid();
         
         // Store email and password hash in database (i.e. create user) - you'll also want to get the id
         const startingInfo = {
@@ -29,10 +31,26 @@ export const signUpRoute = {
         const result = await db.collection('users').insertOne({
             email,
             isVerified: false,
+            verificationString,
             passwordHash,
             info: startingInfo,
         });
         const { insertedId } = result;
+
+        try {
+            await sendEmail({
+                to: email,
+                from: '<your from email address>',
+                subject: 'Please verify your email',
+                text: `
+                    Thanks for signing up! To verify your email, you just need to click the link below:
+                    http://localhost:3000/verify-email/${verificationString}
+                `
+            });
+        } catch (e) {
+            console.log(e);
+            throw new Error(e);
+        }
 
         jwt.sign({
             id: insertedId,
