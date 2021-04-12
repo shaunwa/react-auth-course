@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { v4 as uuid } from 'uuid';
 import { getDbConnection } from '../db';
+import { sendEmail } from '../util/sendEmail';
 
 export const signUpRoute = {
     path: '/api/signup',
@@ -40,7 +42,7 @@ export const signUpRoute = {
         try {
             await sendEmail({
                 to: email,
-                from: '<your from email address>',
+                from: '<your email here>',
                 subject: 'Please verify your email',
                 text: `
                     Thanks for signing up! To verify your email, you just need to click the link below:
