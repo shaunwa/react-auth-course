@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import { useQueryParams } from '../util/useQueryParams';
 import { useToken } from '../auth/useToken';
 
 export const LogInPage = () => {
-    const [token, setToken] = useToken();
+    const [, setToken] = useToken();
 
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -12,8 +13,16 @@ export const LogInPage = () => {
     const [passwordValue, setPasswordValue] = useState('');
 
     const [googleOauthUrl, setGoogleOauthUrl] = useState('');
+    const { token: oauthToken } = useQueryParams();
 
     const history = useHistory();
+
+    useEffect(() => {
+        if (oauthToken) { // If there's a token, that means we were just redirected back here from Oauth
+            setToken(oauthToken);
+            history.push('/');
+        }
+    }, [oauthToken, setToken, history]);
 
     useEffect(() => {
         const loadOauthUrl = async () => {
