@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useQueryParams } from '../util/useQueryParams';
 import { PasswordResetSuccess } from './PasswordResetSuccess';
 import { PasswordResetFail } from './PasswordResetFail';
 
@@ -8,12 +8,13 @@ export const PasswordResetLandingPage = () => {
     const [isSuccess, setIsSuccess] = useState(false);
     const [isFailure, setIsFailure] = useState(false);
     const [passwordValue, setPasswordValue] = useState('');
+    const [confirmationCode, setConfirmationCode] = useState('');
     const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
-    const { passwordResetCode } = useParams();
+    const { email } = useQueryParams();
 
     const onResetClicked =  async () => {
         try {
-            await axios.put(`/api/users/${passwordResetCode}/reset-password`, { newPassword: passwordValue });
+            await axios.put(`/api/users/${confirmationCode}/reset-password`, { email, newPassword: passwordValue });
             setIsSuccess(true);
         } catch (error) {
             setIsFailure(true);
@@ -28,13 +29,15 @@ export const PasswordResetLandingPage = () => {
             <h1>Reset Password</h1>
             <p>Please enter a new password</p>
             <input
-                name='password'
+                value={confirmationCode}
+                placeholder='Confirmation Code'
+                onChange={e => setConfirmationCode(e.target.value)} />
+            <input
                 type='password'
                 value={passwordValue}
                 placeholder='Password'
                 onChange={e => setPasswordValue(e.target.value)} />
             <input
-                name='confirm-password'
                 type='password'
                 value={confirmPasswordValue}
                 placeholder='Confirm Password'
