@@ -21,7 +21,9 @@ export const SignUpPage = () => {
         });
         const { token } = response.data;
         setToken(token);
-        history.push('/please-verify');
+        const encodedPayload = token.split('.')[1];
+        const user = JSON.parse(atob(encodedPayload));
+        history.push(`/please-verify?email=${encodeURIComponent(user.email)}`);
     }
 
     return (
