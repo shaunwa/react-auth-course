@@ -1,6 +1,12 @@
 import express from 'express';
 import { routes } from './routes';
 import { initializeDbConnection } from './db';
+import * as firebaseAdmin from 'firebase-admin';
+import firebaseCredentials from '../credentials.json';
+
+firebaseAdmin.initializeApp({
+    credential: firebaseAdmin.credential.cert(firebaseCredentials),
+});
 
 const PORT = process.env.PORT || 8080;
 
