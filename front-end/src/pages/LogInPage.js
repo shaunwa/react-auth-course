@@ -32,6 +32,7 @@ export const LogInPage = () => {
                 setGoogleOauthUrl(url);
             } catch (e) {
                 console.log(e);
+                setErrorMessage(e.message);
             }
         }
 
@@ -39,13 +40,18 @@ export const LogInPage = () => {
     }, []);
 
     const onLogInClicked = async () => {
-        const response = await axios.post('/api/login', {
-            email: emailValue,
-            password: passwordValue,
-        });
-        const { token } = response.data;
-        setToken(token);
-        history.push('/');
+        try {
+            const response = await axios.post('/api/login', {
+                email: emailValue,
+                password: passwordValue,
+            });
+            const { token } = response.data;
+            setToken(token);
+            history.push('/');
+        } catch (e) {
+            console.log(e);
+            setErrorMessage(e.message);
+        }
     }
 
     return (
