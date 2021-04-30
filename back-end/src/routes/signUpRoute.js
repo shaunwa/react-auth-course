@@ -18,8 +18,12 @@ export const signUpRoute = {
             return res.sendStatus(409); // 409 is the "conflict" error code
         }
 
+        // Generate the salt first
+        const salt = uuid();
+        const pepper = process.env.PEPPER_STRING;
+
         // Encrypt the password
-        const passwordHash = await bcrypt.hash(password, 10);
+        const passwordHash = await bcrypt.hash(salt + password + pepper, 10);
 
         const verificationString = uuid();
         
@@ -35,6 +39,7 @@ export const signUpRoute = {
             isVerified: false,
             verificationString,
             passwordHash,
+            salt,
             info: startingInfo,
         });
         const { insertedId } = result;
@@ -57,7 +62,7 @@ export const signUpRoute = {
         jwt.sign({
             id: insertedId,
             isVerified: false,
-            email,
+            email, // Do NOT send the salt back to the user
             info: startingInfo,
         },
         process.env.JWT_SECRET,

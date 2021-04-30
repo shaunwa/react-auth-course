@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
-import { v4 as uuid } from 'uuid';
-import { sendEmail } from '../util/sendEmail';
+import { v4 as uuid } from 'uuid'; 
 import { getDbConnection } from '../db';
 
 export const resetPasswordRoute = {
@@ -12,10 +11,12 @@ export const resetPasswordRoute = {
 
         const db = getDbConnection('react-auth-db');
 
-        const newPasswordHash = await bcrypt.hash(newPassword, 10);
+        const newSalt = uuid();
+        const pepper = process.env.PEPPER_STRING;
+        const newPasswordHash = await bcrypt.hash(newSalt + newPassword + pepper, 10);
 
         const result = await db.collection('users').findOneAndUpdate({ passwordResetCode }, {
-            $set: { passwordHash: newPasswordHash },
+            $set: { passwordHash: newPasswordHash, salt: newSalt },
             $unset: { passwordResetCode: '' },
         });
 
