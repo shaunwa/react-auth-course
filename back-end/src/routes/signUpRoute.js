@@ -47,7 +47,7 @@ export const signUpRoute = {
         try {
             await sendEmail({
                 to: email,
-                from: '<your email here>',
+                from: 'shaun.p.wassel@gmail.com',
                 subject: 'Please verify your email',
                 text: `
                     Thanks for signing up! To verify your email, you just need to click the link below:
